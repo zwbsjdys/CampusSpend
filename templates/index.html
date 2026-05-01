@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>CampusSpend</title>
+</head>
+<body>
+    <h1>CampusSpend 大学生消费记录与行为分析系统</h1>
+
+    <p>这是我的第一个 Flask 项目，用于记录和分析大学生日常消费。</p>
+
+    <p>
+        <a href="/add">添加消费记录</a>
+    </p>
+
+    <h2>消费记录列表</h2>
+
+    <table border="1">
+        <tr>
+            <th>日期</th>
+            <th>分类</th>
+            <th>金额</th>
+            <th>支付方式</th>
+            <th>是否必要</th>
+            <th>备注</th>
+            <th>操作</th>
+        </tr>
+
+        {% for expense in expenses %}
+        <tr>
+            <td>{{ expense.date }}</td>
+            <td>{{ expense.category }}</td>
+            <td>{{ expense.amount }}</td>
+            <td>{{ expense.payment }}</td>
+            <td>
+                {% if expense.is_necessary == 1 %}
+                    必要
+                {% else %}
+                    非必要
+                {% endif %}
+            </td>
+            <td>{{ expense.note }}</td>
+            <td>
+                <a href="/edit/{{ expense.id }}">编辑</a>
+
+                <form method="post" action="/delete/{{ expense.id }}" onsubmit="return confirm('确定要删除这条消费记录吗？');" style="display:inline;">
+                    <button type="submit">删除</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

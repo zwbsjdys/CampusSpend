@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>编辑消费记录</title>
+</head>
+<body>
+    <h1>编辑消费记录</h1>
+
+    <form method="post">
+        <p>
+            <label>消费日期：</label>
+            <input type="date" name="date" value="{{ expense.date }}" required>
+        </p>
+
+        <p>
+            <label>消费分类：</label>
+            <select name="category" required>
+                <option value="餐饮" {% if expense.category == "餐饮" %}selected{% endif %}>餐饮</option>
+                <option value="学习" {% if expense.category == "学习" %}selected{% endif %}>学习</option>
+                <option value="交通" {% if expense.category == "交通" %}selected{% endif %}>交通</option>
+                <option value="娱乐" {% if expense.category == "娱乐" %}selected{% endif %}>娱乐</option>
+                <option value="购物" {% if expense.category == "购物" %}selected{% endif %}>购物</option>
+                <option value="运动" {% if expense.category == "运动" %}selected{% endif %}>运动</option>
+                <option value="生活用品" {% if expense.category == "生活用品" %}selected{% endif %}>生活用品</option>
+                <option value="其他" {% if expense.category == "其他" %}selected{% endif %}>其他</option>
+            </select>
+        </p>
+
+        <p>
+            <label>金额：</label>
+            <input type="number" step="0.01" name="amount" value="{{ expense.amount }}" required>
+        </p>
+
+        <p>
+            <label>支付方式：</label>
+            <select name="payment">
+                <option value="微信" {% if expense.payment == "微信" %}selected{% endif %}>微信</option>
+                <option value="支付宝" {% if expense.payment == "支付宝" %}selected{% endif %}>支付宝</option>
+                <option value="现金" {% if expense.payment == "现金" %}selected{% endif %}>现金</option>
+                <option value="银行卡" {% if expense.payment == "银行卡" %}selected{% endif %}>银行卡</option>
+                <option value="其他" {% if expense.payment == "其他" %}selected{% endif %}>其他</option>
+            </select>
+        </p>
+
+        <p>
+            <label>是否必要消费：</label>
+            <select name="is_necessary">
+                <option value="1" {% if expense.is_necessary == 1 %}selected{% endif %}>必要</option>
+                <option value="0" {% if expense.is_necessary == 0 %}selected{% endif %}>非必要</option>
+            </select>
+        </p>
+
+        <p>
+            <label>备注：</label>
+            <input type="text" name="note" value="{{ expense.note }}">
+        </p>
+
+        <p>
+            <button type="submit">保存修改</button>
+            <a href="/">返回首页</a>
+        </p>
+    </form>
+</body>
+</html>

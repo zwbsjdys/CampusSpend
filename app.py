@@ -1,0 +1,106 @@
+import sqlite3
+from flask import Flask, render_template, request, redirect, url_for
+
+app = Flask(__name__)
+
+
+def get_db_connection():
+    conn = sqlite3.connect("campus_spend.db")
+    conn.row_factory = sqlite3.Row
+    return conn
+
+
+@app.route("/")
+def index():
+    conn = get_db_connection()
+
+    expenses = conn.execute(
+        "SELECT * FROM expenses ORDER BY date DESC, id DESC"
+    ).fetchall()
+
+    conn.close()
+
+    return render_template("index.html", expenses=expenses)
+
+
+@app.route("/add", methods=("GET", "POST"))
+def add_expense():
+    if request.method == "POST":
+        date = request.form["date"]
+        category = request.form["category"]
+        amount = request.form["amount"]
+        payment = request.form["payment"]
+        note = request.form["note"]
+        is_necessary = request.form["is_necessary"]
+
+        conn = get_db_connection()
+
+        conn.execute(
+            """
+            INSERT INTO expenses (date, category, amount, payment, note, is_necessary)
+            VALUES (?, ?, ?, ?, ?, ?)
+            """,
+            (date, category, amount, payment, note, is_necessary)
+        )
+
+        conn.commit()
+        conn.close()
+
+        return redirect(url_for("index"))
+
+    return render_template("add.html")
+
+
+@app.route("/delete/<int:expense_id>", methods=("POST",))
+def delete_expense(expense_id):
+    conn = get_db_connection()
+
+    conn.execute(
+        "DELETE FROM expenses WHERE id = ?",
+        (expense_id,)
+    )
+
+    conn.commit()
+    conn.close()
+
+    return redirect(url_for("index"))
+
+
+@app.route("/edit/<int:expense_id>", methods=("GET", "POST"))
+def edit_expense(expense_id):
+    conn = get_db_connection()
+
+    expense = conn.execute(
+        "SELECT * FROM expenses WHERE id = ?",
+        (expense_id,)
+    ).fetchone()
+
+    if request.method == "POST":
+        date = request.form["date"]
+        category = request.form["category"]
+        amount = request.form["amount"]
+        payment = request.form["payment"]
+        note = request.form["note"]
+        is_necessary = request.form["is_necessary"]
+
+        conn.execute(
+            """
+            UPDATE expenses
+            SET date = ?, category = ?, amount = ?, payment = ?, note = ?, is_necessary = ?
+            WHERE id = ?
+            """,
+            (date, category, amount, payment, note, is_necessary, expense_id)
+        )
+
+        conn.commit()
+        conn.close()
+
+        return redirect(url_for("index"))
+
+    conn.close()
+
+    return render_template("edit.html", expense=expense)
+
+
+if __name__ == "__main__":
+    app.run(debug=True)
