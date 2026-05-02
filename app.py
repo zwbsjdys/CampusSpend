@@ -14,13 +14,41 @@ def get_db_connection():
 def index():
     conn = get_db_connection()
 
+    # 查询所有消费记录
     expenses = conn.execute(
         "SELECT * FROM expenses ORDER BY date DESC, id DESC"
     ).fetchall()
 
+    # 统计总消费金额和消费记录数量
+    total_result = conn.execute(
+        "SELECT SUM(amount) AS total_amount, COUNT(*) AS total_count FROM expenses"
+    ).fetchone()
+
+    # 统计必要消费总额
+    necessary_result = conn.execute(
+        "SELECT SUM(amount) AS necessary_amount FROM expenses WHERE is_necessary = 1"
+    ).fetchone()
+
+    # 统计非必要消费总额
+    unnecessary_result = conn.execute(
+        "SELECT SUM(amount) AS unnecessary_amount FROM expenses WHERE is_necessary = 0"
+    ).fetchone()
+
     conn.close()
 
-    return render_template("index.html", expenses=expenses)
+    total_amount = total_result["total_amount"] or 0
+    total_count = total_result["total_count"] or 0
+    necessary_amount = necessary_result["necessary_amount"] or 0
+    unnecessary_amount = unnecessary_result["unnecessary_amount"] or 0
+
+    return render_template(
+        "index.html",
+        expenses=expenses,
+        total_amount=total_amount,
+        total_count=total_count,
+        necessary_amount=necessary_amount,
+        unnecessary_amount=unnecessary_amount
+    )
 
 
 @app.route("/add", methods=("GET", "POST"))
