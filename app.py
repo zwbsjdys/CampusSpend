@@ -34,6 +34,16 @@ def index():
         "SELECT SUM(amount) AS unnecessary_amount FROM expenses WHERE is_necessary = 0"
     ).fetchone()
 
+    # 按消费分类统计金额
+    category_stats = conn.execute(
+        """
+        SELECT category, SUM(amount) AS category_total
+        FROM expenses
+        GROUP BY category
+        ORDER BY category_total DESC
+        """
+    ).fetchall()
+
     conn.close()
 
     total_amount = total_result["total_amount"] or 0
@@ -47,7 +57,8 @@ def index():
         total_amount=total_amount,
         total_count=total_count,
         necessary_amount=necessary_amount,
-        unnecessary_amount=unnecessary_amount
+        unnecessary_amount=unnecessary_amount,
+        category_stats=category_stats
     )
 
 

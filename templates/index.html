@@ -15,13 +15,30 @@
 
     <h2>消费统计</h2>
 
-    <ul>
-       <li>总消费金额：{{ total_amount }} 元</li>
-       <li>消费记录数量：{{ total_count }} 条</li>
-       <li>必要消费金额：{{ necessary_amount }} 元</li>
-       <li>非必要消费金额：{{ unnecessary_amount }} 元</li>
-    </ul>
-    <h2>消费记录列表</h2>
+<ul>
+    <li>总消费金额：{{ total_amount }} 元</li>
+    <li>消费记录数量：{{ total_count }} 条</li>
+    <li>必要消费金额：{{ necessary_amount }} 元</li>
+    <li>非必要消费金额：{{ unnecessary_amount }} 元</li>
+</ul>
+
+<h2>分类消费统计</h2>
+
+<table border="1">
+    <tr>
+        <th>消费分类</th>
+        <th>分类总金额</th>
+    </tr>
+
+    {% for item in category_stats %}
+    <tr>
+        <td>{{ item.category }}</td>
+        <td>{{ item.category_total }} 元</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<h2>消费记录列表</h2>
 
     <table border="1">
         <tr>
