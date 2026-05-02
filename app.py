@@ -44,6 +44,16 @@ def index():
         """
     ).fetchall()
 
+    # 按日期统计每日消费金额
+    daily_stats = conn.execute(
+        """
+        SELECT date, SUM(amount) AS daily_total
+        FROM expenses
+        GROUP BY date
+        ORDER BY date ASC
+        """
+    ).fetchall()
+
     conn.close()
 
     total_amount = total_result["total_amount"] or 0
@@ -64,6 +74,9 @@ def index():
         for item in category_stats
     ]
 
+    daily_dates = [item["date"] for item in daily_stats]
+    daily_amounts = [item["daily_total"] for item in daily_stats]
+
     return render_template(
         "index.html",
         expenses=expenses,
@@ -72,7 +85,9 @@ def index():
         necessary_amount=necessary_amount,
         unnecessary_amount=unnecessary_amount,
         category_stats=category_stats,
-        category_chart_data=category_chart_data
+        category_chart_data=category_chart_data,
+        daily_dates=daily_dates,
+        daily_amounts=daily_amounts
     )
 
 

@@ -45,6 +45,10 @@
 
 <div id="categoryPieChart" style="width: 600px; height: 400px;"></div>
 
+<h2>每日消费趋势图</h2>
+
+<div id="dailyBarChart" style="width: 700px; height: 400px;"></div>
+
 <h2>消费记录列表</h2>
 
     <table border="1">
@@ -119,6 +123,41 @@
 
     // 把配置应用到图表上
     categoryPieChart.setOption(option);
+    
+    // 每日消费趋势图数据
+    const dailyDates = JSON.parse('{{ daily_dates | tojson | safe }}');
+    const dailyAmounts = JSON.parse('{{ daily_amounts | tojson | safe }}');
+
+    const dailyChartDom = document.getElementById("dailyBarChart");
+    const dailyBarChart = echarts.init(dailyChartDom);
+
+    const dailyOption = {
+        title: {
+            text: "每日消费趋势",
+            left: "center"
+        },
+        tooltip: {
+            trigger: "axis"
+        },
+        xAxis: {
+            type: "category",
+            data: dailyDates,
+            name: "日期"
+        },
+        yAxis: {
+            type: "value",
+            name: "金额/元"
+        },
+        series: [
+            {
+                name: "每日消费",
+                type: "bar",
+                data: dailyAmounts
+            }
+        ]
+    };
+
+    dailyBarChart.setOption(dailyOption);
     </script>
 </body>
 </html>
