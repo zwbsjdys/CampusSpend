@@ -3,63 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <title>添加消费记录</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <h1>添加消费记录</h1>
+    <div class="container">
+        <div class="header">
+            <h1>添加消费记录</h1>
+            <p>填写本次消费的日期、分类、金额和备注信息。</p>
+        </div>
 
-    <form method="post">
-        <p>
-            <label>消费日期：</label>
-            <input type="date" name="date" required>
-        </p>
+        <div class="form-card">
+            <form method="post">
+                <div class="form-group">
+                    <label>消费日期</label>
+                    <input type="date" name="date" required>
+                </div>
 
-        <p>
-            <label>消费分类：</label>
-            <select name="category" required>
-                <option value="餐饮">餐饮</option>
-                <option value="学习">学习</option>
-                <option value="交通">交通</option>
-                <option value="娱乐">娱乐</option>
-                <option value="购物">购物</option>
-                <option value="运动">运动</option>
-                <option value="生活用品">生活用品</option>
-                <option value="其他">其他</option>
-            </select>
-        </p>
+                <div class="form-group">
+                    <label>消费分类</label>
+                    <select name="category" required>
+                        <option value="餐饮">餐饮</option>
+                        <option value="学习">学习</option>
+                        <option value="交通">交通</option>
+                        <option value="娱乐">娱乐</option>
+                        <option value="购物">购物</option>
+                        <option value="运动">运动</option>
+                        <option value="生活用品">生活用品</option>
+                        <option value="其他">其他</option>
+                    </select>
+                </div>
 
-        <p>
-            <label>金额：</label>
-            <input type="number" step="0.01" name="amount" required>
-        </p>
+                <div class="form-group">
+                    <label>金额</label>
+                    <input type="number" step="0.01" name="amount" required>
+                </div>
 
-        <p>
-            <label>支付方式：</label>
-            <select name="payment">
-                <option value="微信">微信</option>
-                <option value="支付宝">支付宝</option>
-                <option value="现金">现金</option>
-                <option value="银行卡">银行卡</option>
-                <option value="其他">其他</option>
-            </select>
-        </p>
+                <div class="form-group">
+                    <label>支付方式</label>
+                    <select name="payment">
+                        <option value="微信">微信</option>
+                        <option value="支付宝">支付宝</option>
+                        <option value="现金">现金</option>
+                        <option value="银行卡">银行卡</option>
+                        <option value="其他">其他</option>
+                    </select>
+                </div>
 
-        <p>
-            <label>是否必要消费：</label>
-            <select name="is_necessary">
-                <option value="1">必要</option>
-                <option value="0">非必要</option>
-            </select>
-        </p>
+                <div class="form-group">
+                    <label>是否必要消费</label>
+                    <select name="is_necessary">
+                        <option value="1">必要</option>
+                        <option value="0">非必要</option>
+                    </select>
+                </div>
 
-        <p>
-            <label>备注：</label>
-            <input type="text" name="note">
-        </p>
+                <div class="form-group">
+                    <label>备注</label>
+                    <input type="text" name="note">
+                </div>
 
-        <p>
-            <button type="submit">保存</button>
-            <a href="/">返回首页</a>
-        </p>
-    </form>
+                <button class="btn" type="submit">保存</button>
+                <a class="btn btn-secondary" href="/">返回首页</a>
+            </form>
+        </div>
+    </div>
 </body>
 </html>

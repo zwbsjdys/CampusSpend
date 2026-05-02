@@ -4,160 +4,180 @@
     <meta charset="UTF-8">
     <title>CampusSpend</title>
 
-    <!-- 引入 ECharts 图表库 -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
     <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
 </head>
 <body>
-    <h1>CampusSpend 大学生消费记录与行为分析系统</h1>
+    <div class="container">
+        <div class="header">
+            <h1>CampusSpend 大学生消费记录与行为分析系统</h1>
+            <p>用于记录大学生日常消费，并通过统计和图表分析消费结构与消费趋势。</p>
+        </div>
 
-    <p>这是我的第一个 Flask 项目，用于记录和分析大学生日常消费。</p>
+        <div class="action-bar">
+            <a class="btn" href="/add">添加消费记录</a>
+        </div>
 
-    <p>
-        <a href="/add">添加消费记录</a>
-    </p>
+        <div class="card">
+            <h2>消费统计</h2>
 
-    <h2>消费统计</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-title">总消费金额</div>
+                    <div class="stat-value">{{ total_amount }} 元</div>
+                </div>
 
-<ul>
-    <li>总消费金额：{{ total_amount }} 元</li>
-    <li>消费记录数量：{{ total_count }} 条</li>
-    <li>必要消费金额：{{ necessary_amount }} 元</li>
-    <li>非必要消费金额：{{ unnecessary_amount }} 元</li>
-</ul>
+                <div class="stat-card">
+                    <div class="stat-title">消费记录数量</div>
+                    <div class="stat-value">{{ total_count }} 条</div>
+                </div>
 
-<h2>分类消费统计</h2>
+                <div class="stat-card">
+                    <div class="stat-title">必要消费金额</div>
+                    <div class="stat-value">{{ necessary_amount }} 元</div>
+                </div>
 
-<table border="1">
-    <tr>
-        <th>消费分类</th>
-        <th>分类总金额</th>
-    </tr>
+                <div class="stat-card">
+                    <div class="stat-title">非必要消费金额</div>
+                    <div class="stat-value">{{ unnecessary_amount }} 元</div>
+                </div>
+            </div>
+        </div>
 
-    {% for item in category_stats %}
-    <tr>
-        <td>{{ item.category }}</td>
-        <td>{{ item.category_total }} 元</td>
-    </tr>
-    {% endfor %}
-</table>
+        <div class="card">
+            <h2>分类消费统计</h2>
 
-<h2>分类消费占比图</h2>
+            <table>
+                <tr>
+                    <th>消费分类</th>
+                    <th>分类总金额</th>
+                </tr>
 
-<div id="categoryPieChart" style="width: 600px; height: 400px;"></div>
+                {% for item in category_stats %}
+                <tr>
+                    <td>{{ item.category }}</td>
+                    <td>{{ item.category_total }} 元</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
 
-<h2>每日消费趋势图</h2>
+        <div class="card">
+            <h2>分类消费占比图</h2>
+            <div id="categoryPieChart" class="chart-box"></div>
+        </div>
 
-<div id="dailyBarChart" style="width: 700px; height: 400px;"></div>
+        <div class="card">
+            <h2>每日消费趋势图</h2>
+            <div id="dailyBarChart" class="chart-box"></div>
+        </div>
 
-<h2>消费记录列表</h2>
+        <div class="card">
+            <h2>消费记录列表</h2>
 
-    <table border="1">
-        <tr>
-            <th>日期</th>
-            <th>分类</th>
-            <th>金额</th>
-            <th>支付方式</th>
-            <th>是否必要</th>
-            <th>备注</th>
-            <th>操作</th>
-        </tr>
+            <table>
+                <tr>
+                    <th>日期</th>
+                    <th>分类</th>
+                    <th>金额</th>
+                    <th>支付方式</th>
+                    <th>是否必要</th>
+                    <th>备注</th>
+                    <th>操作</th>
+                </tr>
 
-        {% for expense in expenses %}
-        <tr>
-            <td>{{ expense.date }}</td>
-            <td>{{ expense.category }}</td>
-            <td>{{ expense.amount }}</td>
-            <td>{{ expense.payment }}</td>
-            <td>
-                {% if expense.is_necessary == 1 %}
-                    必要
-                {% else %}
-                    非必要
-                {% endif %}
-            </td>
-            <td>{{ expense.note }}</td>
-            <td>
-                <a href="/edit/{{ expense.id }}">编辑</a>
+                {% for expense in expenses %}
+                <tr>
+                    <td>{{ expense.date }}</td>
+                    <td>{{ expense.category }}</td>
+                    <td>{{ expense.amount }} 元</td>
+                    <td>{{ expense.payment }}</td>
+                    <td>
+                        {% if expense.is_necessary == 1 %}
+                            必要
+                        {% else %}
+                            非必要
+                        {% endif %}
+                    </td>
+                    <td>{{ expense.note }}</td>
+                    <td>
+                        <a class="btn btn-secondary" href="/edit/{{ expense.id }}">编辑</a>
 
-                <form method="post" action="/delete/{{ expense.id }}" onsubmit="return confirm('确定要删除这条消费记录吗？');" style="display:inline;">
-                    <button type="submit">删除</button>
-                </form>
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
+                        <form class="operation-form" method="post" action="/delete/{{ expense.id }}" onsubmit="return confirm('确定要删除这条消费记录吗？');">
+                            <button class="btn btn-danger" type="submit">删除</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
 
     <script>
-    // 后端 Flask 传过来的分类统计数据
-    const categoryChartData = JSON.parse('{{ category_chart_data | tojson | safe }}');
+        const categoryChartData = JSON.parse('{{ category_chart_data | tojson | safe }}');
 
-    // 找到页面中放图表的 div
-    const chartDom = document.getElementById("categoryPieChart");
+        const chartDom = document.getElementById("categoryPieChart");
+        const categoryPieChart = echarts.init(chartDom);
 
-    // 初始化 ECharts 图表
-    const categoryPieChart = echarts.init(chartDom);
+        const option = {
+            title: {
+                text: "分类消费占比",
+                left: "center"
+            },
+            tooltip: {
+                trigger: "item",
+                formatter: "{b}: {c} 元 ({d}%)"
+            },
+            legend: {
+                orient: "vertical",
+                left: "left"
+            },
+            series: [
+                {
+                    name: "消费分类",
+                    type: "pie",
+                    radius: "50%",
+                    data: categoryChartData
+                }
+            ]
+        };
 
-    // 配置饼图
-    const option = {
-        title: {
-            text: "分类消费占比",
-            left: "center"
-        },
-        tooltip: {
-            trigger: "item",
-            formatter: "{b}: {c} 元 ({d}%)"
-        },
-        legend: {
-            orient: "vertical",
-            left: "left"
-        },
-        series: [
-            {
-                name: "消费分类",
-                type: "pie",
-                radius: "50%",
-                data: categoryChartData
-            }
-        ]
-    };
+        categoryPieChart.setOption(option);
 
-    // 把配置应用到图表上
-    categoryPieChart.setOption(option);
-    
-    // 每日消费趋势图数据
-    const dailyDates = JSON.parse('{{ daily_dates | tojson | safe }}');
-    const dailyAmounts = JSON.parse('{{ daily_amounts | tojson | safe }}');
+        const dailyDates = JSON.parse('{{ daily_dates | tojson | safe }}');
+        const dailyAmounts = JSON.parse('{{ daily_amounts | tojson | safe }}');
 
-    const dailyChartDom = document.getElementById("dailyBarChart");
-    const dailyBarChart = echarts.init(dailyChartDom);
+        const dailyChartDom = document.getElementById("dailyBarChart");
+        const dailyBarChart = echarts.init(dailyChartDom);
 
-    const dailyOption = {
-        title: {
-            text: "每日消费趋势",
-            left: "center"
-        },
-        tooltip: {
-            trigger: "axis"
-        },
-        xAxis: {
-            type: "category",
-            data: dailyDates,
-            name: "日期"
-        },
-        yAxis: {
-            type: "value",
-            name: "金额/元"
-        },
-        series: [
-            {
-                name: "每日消费",
-                type: "bar",
-                data: dailyAmounts
-            }
-        ]
-    };
+        const dailyOption = {
+            title: {
+                text: "每日消费趋势",
+                left: "center"
+            },
+            tooltip: {
+                trigger: "axis"
+            },
+            xAxis: {
+                type: "category",
+                data: dailyDates,
+                name: "日期"
+            },
+            yAxis: {
+                type: "value",
+                name: "金额/元"
+            },
+            series: [
+                {
+                    name: "每日消费",
+                    type: "bar",
+                    data: dailyAmounts
+                }
+            ]
+        };
 
-    dailyBarChart.setOption(dailyOption);
+        dailyBarChart.setOption(dailyOption);
     </script>
 </body>
 </html>
