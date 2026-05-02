@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>CampusSpend</title>
+
+    <!-- 引入 ECharts 图表库 -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
 </head>
 <body>
     <h1>CampusSpend 大学生消费记录与行为分析系统</h1>
@@ -37,6 +40,10 @@
     </tr>
     {% endfor %}
 </table>
+
+<h2>分类消费占比图</h2>
+
+<div id="categoryPieChart" style="width: 600px; height: 400px;"></div>
 
 <h2>消费记录列表</h2>
 
@@ -75,5 +82,43 @@
         </tr>
         {% endfor %}
     </table>
+
+    <script>
+    // 后端 Flask 传过来的分类统计数据
+    const categoryChartData = JSON.parse('{{ category_chart_data | tojson | safe }}');
+
+    // 找到页面中放图表的 div
+    const chartDom = document.getElementById("categoryPieChart");
+
+    // 初始化 ECharts 图表
+    const categoryPieChart = echarts.init(chartDom);
+
+    // 配置饼图
+    const option = {
+        title: {
+            text: "分类消费占比",
+            left: "center"
+        },
+        tooltip: {
+            trigger: "item",
+            formatter: "{b}: {c} 元 ({d}%)"
+        },
+        legend: {
+            orient: "vertical",
+            left: "left"
+        },
+        series: [
+            {
+                name: "消费分类",
+                type: "pie",
+                radius: "50%",
+                data: categoryChartData
+            }
+        ]
+    };
+
+    // 把配置应用到图表上
+    categoryPieChart.setOption(option);
+    </script>
 </body>
 </html>

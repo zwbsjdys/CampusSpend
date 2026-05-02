@@ -51,6 +51,19 @@ def index():
     necessary_amount = necessary_result["necessary_amount"] or 0
     unnecessary_amount = unnecessary_result["unnecessary_amount"] or 0
 
+    # ECharts 饼图需要的数据格式：
+    # [
+    #   {"name": "餐饮", "value": 120.5},
+    #   {"name": "学习", "value": 35}
+    # ]
+    category_chart_data = [
+        {
+            "name": item["category"],
+            "value": item["category_total"]
+        }
+        for item in category_stats
+    ]
+
     return render_template(
         "index.html",
         expenses=expenses,
@@ -58,7 +71,8 @@ def index():
         total_count=total_count,
         necessary_amount=necessary_amount,
         unnecessary_amount=unnecessary_amount,
-        category_stats=category_stats
+        category_stats=category_stats,
+        category_chart_data=category_chart_data
     )
 
 
